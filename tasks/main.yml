@@ -1,0 +1,19 @@
+---
+- name: Configure sudo
+  tags:
+    - certbot
+    - certificates
+    - ssl
+  become: true
+  block:
+    - name: Create certbot deploy hook directory
+      file:
+        path: /etc/letsencrypt/renewal-hooks/deploy
+        state: directory
+        mode: '0755'
+    - name: Create certbot deploy hook scripts
+      copy:
+        dest: "/etc/letsencrypt/renewal-hooks/deploy/{{ item.name }}.sh"
+        mode: '744'
+        content: "{{ item.content }}"
+      with_items: "{{ certbot_deploy_hooks }}"
